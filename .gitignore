@@ -1,3 +1,5 @@
 .idea 
 .git 
 venv 
+.env 
+logs.log 
