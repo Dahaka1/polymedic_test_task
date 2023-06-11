@@ -2,7 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class DepartmentBase(BaseModel):
-	title: str
+	title: str | None = Field(
+		default=None, max_length=50
+	)
 
 
 class DepartmentCreate(DepartmentBase):
@@ -17,8 +19,11 @@ class Department(DepartmentBase):
 
 
 class FacultyBase(BaseModel):
-	title: str | None = None
-	department: Department
+	title: str | None = Field(
+		default=None,
+		max_length=50
+	)
+	department_id: int
 
 
 class FacultyCreate(FacultyBase):
@@ -33,8 +38,11 @@ class Faculty(FacultyBase):
 
 
 class StudentGroupBase(BaseModel):
-	title: str | None = None
-	faculty: Faculty
+	title: str | None = Field(
+		default=None,
+		max_length=50
+	)
+	faculty_id: int
 
 
 class StudentGroupCreate(StudentGroupBase):
@@ -49,8 +57,10 @@ class StudentGroup(StudentGroupBase):
 
 
 class StudentBase(BaseModel):
-	fullname: str
-	student_group: StudentGroup
+	fullname: str = Field(
+		max_length=50
+	)
+	student_group_id: int | None = None
 
 
 class StudentCreate(StudentBase):

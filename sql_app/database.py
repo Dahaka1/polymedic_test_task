@@ -2,7 +2,8 @@ from psycopg2 import connect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import src.settings
-from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import declarative_base
+from typing import Any
 
 
 SQLALCHEMY_DATABASE_URL = "postgresql://%s:%s@%s:%s/%s" % tuple(src.settings.DATABASE_PARAMS.values())
@@ -12,12 +13,9 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = automap_base()
-Base.prepare(engine, reflect=True)
+Base = declarative_base()
 
-# for manually connecting
-conn = connect(
-	**src.settings.DATABASE_PARAMS
-)
+conn = connect(**src.settings.DATABASE_PARAMS)
 
-conn.autocommit = True
+
+
