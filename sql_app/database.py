@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import src.settings
 from sqlalchemy.orm import declarative_base
-from typing import Any
 
 
 SQLALCHEMY_DATABASE_URL = "postgresql://%s:%s@%s:%s/%s" % tuple(src.settings.DATABASE_PARAMS.values())

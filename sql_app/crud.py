@@ -44,3 +44,42 @@ def delete_student(db: Session, student_id: int):
 	db.query(models.Student).filter_by(id=student_id).delete()
 	db.commit()
 	return student_id
+
+
+def get_teachers(db: Session):
+	teachers = db.query(models.Teacher).all()
+	return teachers
+
+
+def create_course(db: Session, course: schemas.CourseCreate):
+	course = models.Course(
+		title=course.title
+	)
+	db.add(course)
+	db.commit()
+	db.refresh(course)
+	return course
+
+
+def get_course(db: Session, course_id: int):
+	course = db.query(models.Course).filter_by(id=course_id).first()
+	return course
+
+
+def create_student_exam_grade(db: Session, student_score: schemas.StudentGradeCreate):
+	student_exam_score = models.StudentGrade(
+		student_id=student_score.student_id,
+		exam_id=student_score.exam_id,
+		grade=student_score.grade
+	)
+	db.add(student_exam_score)
+	db.commit()
+	db.refresh(student_exam_score)
+	return student_exam_score
+
+
+def update_student_exam_grade(db: Session, student_grade: models.StudentGrade, updated_student_grade: schemas.StudentGradeCreate):
+	student_grade.grade = updated_student_grade.grade
+	db.commit()
+	db.refresh(student_grade)
+	return student_grade

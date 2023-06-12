@@ -6,6 +6,7 @@ import src.settings
 from . import models
 from .crud import create_instance
 from .main import get_db
+from datetime import date, time
 
 
 def get_all_tables() -> list[str]:
@@ -50,8 +51,35 @@ def init_models() -> None:
 		default_student_group = create_instance(
 			models.StudentGroup(title="A52", faculty_id=default_faculty.id)
 		)
+		default_teachers_params = [
+			{"fullname": "Yakov Blazhkovich"},
+			{"fullname": "Andrew Mirny"}
+		]
+		for params in default_teachers_params:
+			create_instance(
+				models.Teacher(**params, department_id=default_department.id)
+			)
+		# default exam
+		create_instance(
+			models.Exam(exam_date=date(2023, 6, 15), exam_time=time(10))
+		)
+		# default self work
+		create_instance(
+			models.SelfWork()
+		)
+		# default semester
+		create_instance(
+			models.Semester(number=1, semester_year=2023)
+		)
 		logger.info(
-			f"Default models instances was successfully created. "
+			f"Default models instances was successfully created."
+		)
+		logger.info(
 			f"Now you can use default students group with ID = {default_student_group.id}"
 			f" for creating student instances"
+		)
+		logger.info(
+			f"Also, you can create new course, and it will automatically use default "
+			f"CourseProgram, StudyingPlan, Exam and SelfWork instances as"
+			f" self params"
 		)

@@ -74,3 +74,53 @@ class Student(StudentBase):
 		orm_mode = True
 
 
+class TeacherBase(BaseModel):
+	fullname: str | None = Field(
+		max_length=50,
+		default=None
+	)
+	department_id: int
+
+
+class TeacherCreate(TeacherBase):
+	pass
+
+
+class Teacher(TeacherBase):
+	id: int
+
+	class Config:
+		orm_mode = True
+
+
+class CourseBase(BaseModel):
+	title: str = Field(
+		max_length=50
+	)
+
+
+class CourseCreate(CourseBase):
+	pass
+
+
+class Course(CourseBase):
+	id: int
+
+	class Config:
+		orm_mode = True
+
+
+class StudentGradeBase(BaseModel):
+	student_id: int
+	exam_id: int
+	grade: int = Field(
+		ge=1, le=5
+	)
+
+
+class StudentGradeCreate(StudentGradeBase):
+	pass
+
+
+class StudentGrade(StudentGradeBase):
+	id: int
