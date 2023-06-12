@@ -112,7 +112,8 @@ class Course(CourseBase):
 
 class StudentGradeBase(BaseModel):
 	student_id: int
-	exam_id: int
+	course_id: int
+	exam_id: int | None = None
 	grade: int = Field(
 		ge=1, le=5
 	)

@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import time
+time.sleep(5)  # waiting before imports for db-initializing while starting docker container
 
 from src import logger_init, start_app
 from sql_app import init_database, init_models

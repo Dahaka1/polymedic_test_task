@@ -18,15 +18,29 @@ def get_all_tables() -> list[str]:
 
 
 def init_database() -> None:
+	"""
+	function creates standard database relations if it needed
+	"""
 	tables_amount = len(get_all_tables())
+	if src.settings.DROP_TABLES_EVERY_LAUNCH is True:
+		if tables_amount:
+			with conn.cursor() as cursor:
+				cursor.execute(quieries.DROP_ALL_TABLES)
+				tables_amount = 0
+			logger.info(
+				"All database relations was deleted, because parameter DROP_TABLES_EVERY_LAUNCH in settings file is True. "
+				" While this param is True, database relations will automatically reinitialized with every launching app"
+			)
 	if not tables_amount:  # if there are no tables existing (=0)
 		file = open(src.settings.SQL_MAIN_SCRIPT_PATH, encoding='utf-8')
 		script = file.read()
 		with conn.cursor() as cursor:
 			cursor.execute(script)
+			conn.commit()
 		file.close()
+		tables = get_all_tables()  # refreshing
 		logger.info(
-			f"Database relations was successfully created ({tables_amount} relations)"
+			f"Database relations was successfully created ({tables})"
 		)
 	elif tables_amount == src.settings.STD_TABLES_AMOUNT:
 		pass
@@ -38,7 +52,7 @@ def init_database() -> None:
 
 def init_models() -> None:
 	"""
-	creating models objects by default
+	creating models objects by default for testing api methods without tiring adding relations objects
 	"""
 	db = SessionLocal()
 	if not any(db.query(models.Department).all()):

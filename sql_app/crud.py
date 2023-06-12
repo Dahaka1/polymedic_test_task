@@ -31,8 +31,7 @@ def get_student(db: Session, student_id: int):
 	return db.query(models.Student).filter_by(id=student_id).first()
 
 
-def update_student(db: Session, student: schemas.Student, updated_student: schemas.Student):
-	student.id = updated_student.id
+def update_student(db: Session, student: schemas.Student, updated_student: schemas.StudentCreate):
 	student.fullname = updated_student.fullname
 	student.student_group_id = updated_student.student_group_id
 	db.commit()
@@ -43,7 +42,7 @@ def update_student(db: Session, student: schemas.Student, updated_student: schem
 def delete_student(db: Session, student_id: int):
 	db.query(models.Student).filter_by(id=student_id).delete()
 	db.commit()
-	return student_id
+	return {"delete": student_id}
 
 
 def get_teachers(db: Session):
@@ -66,9 +65,10 @@ def get_course(db: Session, course_id: int):
 	return course
 
 
-def create_student_exam_grade(db: Session, student_score: schemas.StudentGradeCreate):
+def create_student_course_grade(db: Session, student_score: schemas.StudentGradeCreate):
 	student_exam_score = models.StudentGrade(
 		student_id=student_score.student_id,
+		course_id=student_score.course_id,
 		exam_id=student_score.exam_id,
 		grade=student_score.grade
 	)
@@ -78,8 +78,8 @@ def create_student_exam_grade(db: Session, student_score: schemas.StudentGradeCr
 	return student_exam_score
 
 
-def update_student_exam_grade(db: Session, student_grade: models.StudentGrade, updated_student_grade: schemas.StudentGradeCreate):
-	student_grade.grade = updated_student_grade.grade
+def update_student_exam_grade(db: Session, student_grade: models.StudentGrade, updated_student_grade: int):
+	student_grade.grade = updated_student_grade
 	db.commit()
 	db.refresh(student_grade)
 	return student_grade

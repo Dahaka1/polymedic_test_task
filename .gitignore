@@ -1,5 +1,4 @@
 .idea 
 .git 
-venv 
-.env 
+venv
 logs.log 

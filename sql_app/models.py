@@ -37,6 +37,9 @@ class StudentGroup(Base):
 
 	@staticmethod
 	def default_student_group_id():
+		"""
+		:return: default student group id that was created during first launching
+		"""
 		try:
 			return SessionLocal().query(StudentGroup).first().id
 		except AttributeError:
@@ -84,12 +87,18 @@ class Course(Base):
 	title = Column(String)
 
 	def get_course_program(self):
+		"""
+		:return: current course program if exists
+		"""
 		course_program = SessionLocal().query(
 			CourseProgram
 		).filter_by(course_id=self.id).first()
 		return course_program
 
 	def get_info(self):
+		"""
+		:return: course extended params such as program, included exams and self-work
+		"""
 		course_program = self.get_course_program()
 		return {
 			"course_program": course_program,
@@ -98,6 +107,9 @@ class Course(Base):
 		}
 
 	def get_students(self):
+		"""
+		:return: list of students which defined by course
+		"""
 		db = SessionLocal()
 		studying_plan = self.get_course_program().studying_plan()
 		student_groups = db.query(
@@ -119,16 +131,26 @@ class CourseProgram(Base):
 	course_id = Column(Integer, ForeignKey("course.id", ondelete="CASCADE", onupdate="CASCADE"))
 
 	def exams(self):
+		"""
+		:return: exams that course program includes
+		"""
 		return SessionLocal().query(
 			CourseProgramExam
 		).filter_by(course_program_id=self.id).all()
 
 	def self_works(self):
+		"""
+		:return: self-work that course program includes
+		"""
 		return SessionLocal().query(
 			CourseProgramSelfWork
 		).filter_by(course_program_id=self.id).all()
 
 	def studying_plan(self, semester_id: int | None = None):
+		"""
+		:param semester_id: optional param that can be used in the future
+		:return: studying plan that includes current course program
+		"""
 		if semester_id is None:
 			return SessionLocal().query(
 				StudyingPlan
@@ -138,6 +160,10 @@ class CourseProgram(Base):
 
 	@staticmethod
 	def create_default(course_id: int):
+		"""
+		:param course_id: id of course that being creating without choosing any specific program
+		:return: course program instance & sqlalchemy db instance
+		"""
 		default_course_program = CourseProgram(
 			course_id=course_id
 		)
@@ -190,6 +216,11 @@ class StudyingPlan(Base):
 
 	@staticmethod
 	def create_default(course_program_id, db):
+		"""
+		:param course_program_id: created course program that needs to be defined by some studying plan
+		:param db: default sqlalchemy db instance
+		:return: none
+		"""
 		default_studying_plan = StudyingPlan(
 			faculty_id=db.query(Faculty).first().id,
 			semester_id=db.query(Semester).first().id,
@@ -212,13 +243,7 @@ class StudentGrade(Base):
 
 	id = Column(Integer, primary_key=True)
 	student_id = Column(Integer, ForeignKey("student.id", ondelete="CASCADE", onupdate="CASCADE"))
+	course_id = Column(Integer, ForeignKey("course.id", ondelete="CASCADE", onupdate="CASCADE"))
 	exam_id = Column(Integer, ForeignKey("exam.id", ondelete="CASCADE", onupdate="CASCADE"))
 	grade = Column(Integer)
 
-
-# class CourseProgram(Base):
-# 	__tablename__ = "course_program"
-#
-# 	id = Column(Integer, primary_key=True)
-# 	course_id = Column(Integer, ForeignKey("course.id", onupdate="CASCADE", ondelete="CASCADE"))
-#
