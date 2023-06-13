@@ -5,9 +5,7 @@ course_program AS c_p ON s_p.course_program_id=c_p.id JOIN course AS c ON c_p.co
 c.title='Математика';
 
 -- QUERY #2
--- score might be chosen only by type 'assessment'
--- exam_id must be defined early by course title
-UPDATE student_exam SET score='3' WHERE student_id=10 AND exam_id=20;
+UPDATE student_grade SET grade=3 WHERE student_id=10 AND course_id=1 AND exam_id=20;
 
 
 -- QUERY #3
